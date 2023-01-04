@@ -12,15 +12,19 @@
 #include <iostream>
 #include <vector>
 
-void printCsv(const std::string &filebase, const ctrl::AccelDesigner &ad) {
+void printCsv(const std::string &filebase, const ctrl::AccelDesigner &ad)
+{
   ctrl_logi << ad << std::endl;
-  const float Ts = 1e-4f;
+  // const float Ts = 1e-4f;
+  const float Ts = 1e-3f;
   std::ofstream of;
   const auto ticks = ad.getTimeStamp();
   float t = 0;
-  for (size_t i = 0; i < ticks.size(); ++i) {
+  for (size_t i = 0; i < ticks.size(); ++i)
+  {
     of = std::ofstream(filebase + "_" + std::to_string(i) + ".csv");
-    while (t + Ts < ticks[i]) {
+    while (t + Ts < ticks[i])
+    {
       of << t;
       of << "," << ad.j(t);
       of << "," << ad.a(t);
@@ -30,9 +34,11 @@ void printCsv(const std::string &filebase, const ctrl::AccelDesigner &ad) {
       t += Ts;
     }
   }
+  // printf("%f\n", ad.t_end());
 }
 
-void measurement() {
+void measurement()
+{
   ctrl::AccelDesigner ad;
   const std::vector<std::vector<float>> params = {
       {100, 10, 4, 0, 2, 4},     //< vs -> vm -> vt, tm1>0, tm2>0
@@ -48,7 +54,8 @@ void measurement() {
       {100, 10, 4, 0, 4, 0.1},   //< ve != vt, tm < 0, accel
       {100, 10, 4, 4, 0, 0.1},   //< ve != vt, tm < 0, decel
   };
-  for (const auto &ps : params) {
+  for (const auto &ps : params)
+  {
     const int n = 10000;
     const auto ts = std::chrono::steady_clock::now();
     for (int i = 0; i < n; ++i)
@@ -60,14 +67,17 @@ void measurement() {
   }
 }
 
-int main() {
+int main()
+{
   /* print csv */
   ctrl::AccelDesigner ad;
-  ad.reset(100, 10, 4, 0, 2, 4);
+  // ad.reset(100, 10, 4, 0, 2, 4);
+  ad.reset(10, 1.5, 0.5, 0, 0.186825, 0.138);
+  // ad.reset(10, 1.5, 0.5, 0.186825, 0, 0.09);
   printCsv("accel", ad);
 
   /* time measurement */
-  measurement();
+  // measurement();
 
   return 0;
 }
