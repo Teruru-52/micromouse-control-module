@@ -162,7 +162,7 @@ namespace ctrl
 #endif
     }
 
-    void reset(const std::array<float, 8> &parameters)
+    void reset(const float *parameters)
     {
       reset(parameters[0],
             parameters[1],
