@@ -29,6 +29,7 @@ namespace ctrl
    * - 最大加速度 $a_{\\max}$ と始点速度 $v_s$
    * など拘束次第では目標速度 $v_t$ に達することができない場合があるので注意する
    */
+
   class AccelDesigner
   {
   public:
@@ -160,18 +161,6 @@ namespace ctrl
            << "\tv3: " << v_end << std::endl;
     }
 #endif
-    }
-
-    void reset(const float *parameters)
-    {
-      reset(parameters[0],
-            parameters[1],
-            parameters[2],
-            parameters[3],
-            parameters[4],
-            parameters[5],
-            parameters[6],
-            parameters[7]);
     }
 
     /**
