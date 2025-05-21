@@ -79,7 +79,7 @@ namespace ctrl
           j_max, a_max, v_start, v_end);
       if (std::abs(dist) < std::abs(dist_min))
       {
-        ctrl_logd << "vs -> ve != vt" << std::endl;
+        // ctrl_logd << "vs -> ve != vt" << std::endl;
         /* 目標速度$v_t$に向かい，走行距離$d$で到達し得る終点速度$v_e$を算出 */
         v_end = AccelCurve::calcReachableVelocityEnd(j_max, a_max, v_start,
                                                      v_target, dist);
@@ -94,7 +94,7 @@ namespace ctrl
       const auto d_sum = ac.x_end() + dc.x_end();
       if (std::abs(dist) < std::abs(d_sum))
       {
-        ctrl_logd << "vs -> vr -> ve" << std::endl;
+        // ctrl_logd << "vs -> vr -> ve" << std::endl;
         /* 走行距離などの拘束から到達可能速度を算出 */
         const auto v_rm = AccelCurve::calcReachableVelocityMax(
             j_max, a_max, v_start, v_end, dist);
