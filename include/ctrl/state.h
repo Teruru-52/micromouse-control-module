@@ -23,4 +23,4 @@ struct State {
   Pose dddq;
 };
 
-}; // namespace ctrl
+};  // namespace ctrl

@@ -8,8 +8,8 @@
 #pragma once
 
 #include <array>
-#include <cmath>    //< for std::sqrt, std::cbrt
-#include <iostream> //< for std::cout
+#include <cmath>     //< for std::sqrt, std::cbrt
+#include <iostream>  //< for std::cout
 #include <ostream>
 
 /* log level definition */
@@ -61,7 +61,7 @@ namespace ctrl {
  * - 始点速度および終点速度は，正でも負でも可
  */
 class AccelCurve {
-public:
+ public:
   /**
    * @brief 初期化付きのコンストラクタ．
    *
@@ -92,13 +92,13 @@ public:
   void reset(const float j_max, const float a_max, const float v_start,
              const float v_end) {
     /* 符号付きで代入 */
-    am = (v_end > v_start) ? a_max : -a_max; //< 最大加速度の符号を決定
-    jm = (v_end > v_start) ? j_max : -j_max; //< 最大躍度の符号を決定
+    am = (v_end > v_start) ? a_max : -a_max;  //< 最大加速度の符号を決定
+    jm = (v_end > v_start) ? j_max : -j_max;  //< 最大躍度の符号を決定
     /* 初期値と最終値を代入 */
-    v0 = v_start; //< 代入
-    v3 = v_end;   //< 代入
-    t0 = 0;       //< ここでは初期値をゼロとする
-    x0 = 0;       //< ここでは初期値はゼロとする
+    v0 = v_start;  //< 代入
+    v3 = v_end;    //< 代入
+    t0 = 0;        //< ここでは初期値をゼロとする
+    x0 = 0;        //< ここでは初期値はゼロとする
     /* 速度が曲線となる部分の時間を決定 */
     const auto tc = a_max / j_max;
     /* 等加速度直線運動の時間を決定 */
@@ -109,19 +109,19 @@ public:
       t1 = t0 + tc;
       t2 = t1 + tm;
       t3 = t2 + tc;
-      v1 = v0 + am * tc / 2;                //< v(t) を積分
-      v2 = v1 + am * tm;                    //< v(t) を積分
-      x1 = x0 + v0 * tc + am * tc * tc / 6; //< x(t) を積分
-      x2 = x1 + v1 * tm;                    //< x(t) を積分
-      x3 = x0 + (v0 + v3) / 2 * (t3 - t0); //< v(t) グラフの台形の面積より
+      v1 = v0 + am * tc / 2;                 //< v(t) を積分
+      v2 = v1 + am * tm;                     //< v(t) を積分
+      x1 = x0 + v0 * tc + am * tc * tc / 6;  //< x(t) を積分
+      x2 = x1 + v1 * tm;                     //< x(t) を積分
+      x3 = x0 + (v0 + v3) / 2 * (t3 - t0);  //< v(t) グラフの台形の面積より
     } else {
       /* 速度: 曲線 -> 曲線 */
-      const auto tcp = std::sqrt((v3 - v0) / jm); //< 変曲までの時間
+      const auto tcp = std::sqrt((v3 - v0) / jm);  //< 変曲までの時間
       t1 = t2 = t0 + tcp;
       t3 = t2 + tcp;
-      v1 = v2 = (v0 + v3) / 2; //< 対称性より中点となる
-      x1 = x2 = x0 + v1 * tcp + jm * tcp * tcp * tcp / 6; //< x(t) を積分
-      x3 = x0 + 2 * v1 * tcp; //< 速度 v(t) グラフの面積より
+      v1 = v2 = (v0 + v3) / 2;  //< 対称性より中点となる
+      x1 = x2 = x0 + v1 * tcp + jm * tcp * tcp * tcp / 6;  //< x(t) を積分
+      x3 = x0 + 2 * v1 * tcp;  //< 速度 v(t) グラフの面積より
     }
   }
   /**
@@ -210,7 +210,7 @@ public:
   /**
    * @brief std::ostream に軌道のcsvを出力する関数．
    */
-  void printCsv(std::ostream &os, const float t_interval = 1e-3f) const {
+  void printCsv(std::ostream& os, const float t_interval = 1e-3f) const {
     for (float t = t0; t < t_end(); t += t_interval) {
       os << t << "," << j(t) << "," << a(t) << "," << v(t) << "," << x(t)
          << std::endl;
@@ -219,7 +219,7 @@ public:
   /**
    * @brief 情報の表示
    */
-  friend std::ostream &operator<<(std::ostream &os, const AccelCurve &obj) {
+  friend std::ostream& operator<<(std::ostream& os, const AccelCurve& obj) {
     os << "AccelCurve ";
     os << "\tvs: " << obj.v0;
     os << "\tve: " << obj.v3;
@@ -231,7 +231,7 @@ public:
     return os;
   }
 
-public:
+ public:
   /**
    * @brief 走行距離から達しうる終点速度を算出する関数
    *
@@ -251,8 +251,8 @@ public:
     const auto am = (vt > vs) ? a_max : -a_max;
     const auto jm = (vt > vs) ? j_max : -j_max;
     /* 等加速度直線運動の有無で分岐 */
-    const auto d_triangle = (vs + am * tc / 2) * tc; //< distance @ tm == 0
-    const auto v_triangle = jm / am * d - vs;        //< v_end @ tm == 0
+    const auto d_triangle = (vs + am * tc / 2) * tc;  //< distance @ tm == 0
+    const auto v_triangle = jm / am * d - vs;         //< v_end @ tm == 0
     // ctrl_logd << "d_tri: " << d_triangle << std::endl;
     // ctrl_logd << "v_tri: " << v_triangle << std::endl;
     if (d * v_triangle > 0 && std::abs(d) > std::abs(d_triangle)) {
@@ -281,7 +281,7 @@ public:
       /* ルートの中が負のとき，極座標変換して解を求める */
       ctrl_logd << "v: curve - curve (decel)" << std::endl;
       const auto ci = std::abs(b) * std::sqrt(-ci_b);
-      const auto r = std::hypot(cr, ci); //< = sqrt(cr^2 + ci^2)
+      const auto r = std::hypot(cr, ci);  //< = sqrt(cr^2 + ci^2)
       const auto th = std::atan2(ci, cr);
       return (d > 0 ? 1 : -1) * (2 * std::cbrt(r) * std::cos(th / 3) - a / 3);
     }
@@ -315,7 +315,7 @@ public:
       return vs;
     }
     const auto sqrtD = std::sqrt(D);
-    return (-amtc + (d > 0 ? sqrtD : -sqrtD)) / 2; //< 2次方程式の解
+    return (-amtc + (d > 0 ? sqrtD : -sqrtD)) / 2;  //< 2次方程式の解
   }
   /**
    * @brief 速度差から変位を算出する関数
@@ -340,14 +340,14 @@ public:
     /* 始点から終点までの時間を決定 */
     const auto t_all =
         (tm > 0) ? (tc + tm + tc) : (2 * std::sqrt((v_end - v_start) / jm));
-    return (v_start + v_end) / 2 * t_all; //< 速度グラフの面積により
+    return (v_start + v_end) / 2 * t_all;  //< 速度グラフの面積により
   }
 
-protected:
+ protected:
   float jm;             /**< @brief 躍度定数 [m/s/s/s] */
   float am;             /**< @brief 加速度定数 [m/s/s] */
   float t0, t1, t2, t3; /**< @brief 時刻定数 [s] */
   float v0, v1, v2, v3; /**< @brief 速度定数 [m/s] */
   float x0, x1, x2, x3; /**< @brief 位置定数 [m] */
 };
-} // namespace ctrl
+}  // namespace ctrl

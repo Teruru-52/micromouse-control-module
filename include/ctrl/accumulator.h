@@ -16,14 +16,15 @@ namespace ctrl {
  * @tparam T データの型
  * @tparam S 蓄積するデータの数
  */
-template <typename T, std::size_t S> class Accumulator {
-public:
+template <typename T, std::size_t S>
+class Accumulator {
+ public:
   /**
    * @brief コンストラクタ
    *
    * @param value バッファ内の全データに代入する初期値
    */
-  Accumulator(const T &value = T()) {
+  Accumulator(const T& value = T()) {
     buffer = new T[S];
     head = 0;
     clear(value);
@@ -37,14 +38,13 @@ public:
    *
    * @param value 代入する値
    */
-  void clear(const T &value = T()) {
-    for (int i = 0; i < S; i++)
-      buffer[i] = value;
+  void clear(const T& value = T()) {
+    for (int i = 0; i < S; i++) buffer[i] = value;
   }
   /**
    * @brief 最新のデータを追加する関数
    */
-  void push(const T &value) {
+  void push(const T& value) {
     head = (head + 1) % S;
     buffer[head] = value;
   }
@@ -56,7 +56,7 @@ public:
    * @param index 直近何番目のデータかを指すインデックス
    * @return const T&
    */
-  const T &operator[](const std::size_t index) const {
+  const T& operator[](const std::size_t index) const {
     return buffer[((int)S + head - index) % S];
   }
   /**
@@ -67,9 +67,7 @@ public:
    */
   const T average(const int n = S) const {
     T sum = T();
-    for (int i = 0; i < n; i++) {
-      sum += buffer[((int)S + head - i) % S];
-    }
+    for (int i = 0; i < n; i++) { sum += buffer[((int)S + head - i) % S]; }
     return sum / n;
   }
   /**
@@ -77,9 +75,9 @@ public:
    */
   std::size_t size() const { return S; }
 
-private:
-  T *buffer; /**< @brief リングバッファとして使う配列のポインタ */
+ private:
+  T* buffer; /**< @brief リングバッファとして使う配列のポインタ */
   std::size_t head; /**< @brief リングバッファの先頭インデックス */
 };
 
-} // namespace ctrl
+}  // namespace ctrl
